@@ -40,3 +40,5 @@ python Script.py --encrypt-file input_file_path --output-file-encrypt output_fil
 python Script.py --decrypt-file encrypted_file_path --output-file-decrypt output_file_path
  ```
 
+# License
+This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.
