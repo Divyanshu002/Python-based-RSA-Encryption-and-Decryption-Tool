@@ -56,17 +56,14 @@ class SecureRSA:
             print("Please generate key pair first.")
             return
 
-        # Generate a random symmetric key for AES encryption
-        symmetric_key = os.urandom(32)  # 256-bit key
+        symmetric_key = os.urandom(32) 
 
-        # Encrypt the file content with AES
         with open(file_path, "rb") as f:
             file_content = f.read()
 
         cipher = AES.new(symmetric_key, AES.MODE_EAX)
         cipher_text, tag = cipher.encrypt_and_digest(file_content)
 
-        # Encrypt the symmetric key with RSA
         encrypted_symmetric_key = self.public_key.encrypt(
             symmetric_key,
             padding.OAEP(
@@ -76,7 +73,6 @@ class SecureRSA:
             )
         )
 
-        # Save the encrypted symmetric key and the AES-encrypted file content to the output file
         with open(output_path, "wb") as f:
             f.write(encrypted_symmetric_key)
             f.write(cipher.nonce)
@@ -91,12 +87,11 @@ class SecureRSA:
             return
 
         with open(file_path, "rb") as f:
-            encrypted_symmetric_key = f.read(256)  # RSA encrypted symmetric key is 256 bytes
-            nonce = f.read(16)  # 16 bytes
-            tag = f.read(16)  # 16 bytes
+            encrypted_symmetric_key = f.read(256)  
+            nonce = f.read(16)  
+            tag = f.read(16)  
             cipher_text = f.read()
 
-        # Decrypt the symmetric key with RSA
         symmetric_key = self.private_key.decrypt(
             encrypted_symmetric_key,
             padding.OAEP(
@@ -106,11 +101,9 @@ class SecureRSA:
             )
         )
 
-        # Decrypt the file content with AES
         cipher = AES.new(symmetric_key, AES.MODE_EAX, nonce=nonce)
         plain_text = cipher.decrypt_and_verify(cipher_text, tag)
 
-        # Save the decrypted file content to the output file
         with open(output_path, "wb") as f:
             f.write(plain_text)
 
